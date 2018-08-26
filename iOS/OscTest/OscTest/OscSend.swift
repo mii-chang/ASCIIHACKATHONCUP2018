@@ -6,26 +6,23 @@
 //  Copyright © 2018年 Miyuu Okabe. All rights reserved.
 //
 
-import UIKit
 
-class OscSendViewController: UIViewController {
-    
+class OscSend {
     //osc送信のためのoscClientの初期化
-    let oscClient = F53OSCClient.init()
+    let oscClient:F53OSCClient!
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
+    init(){
+        oscClient = F53OSCClient.init()
         //OSCを送りたい先のIPアドレスを指定
-        oscClient.host = "192.168.100.101"
+        oscClient.host = "192.168.100.123"
         //贈りたい先のport番号を指定
         oscClient.port = 8000
-        sendOSC()
     }
     
-     func sendOSC(){
+    func sendOSC(message: [Int]){
+    
         //123というメッセージをOSCで送信
-        let message : [Int] = [1,2,3,4]
+//        let message : [Float] = [1.0,2.0,3.0]
         self.sendMessage(client: oscClient, addressPattern: "/value", arguments: message)
         //複数の値を送る場合はarguments:[123,231,312]
     }

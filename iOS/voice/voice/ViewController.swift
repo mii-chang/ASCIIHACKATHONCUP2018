@@ -166,15 +166,7 @@ class ViewController: UIViewController {
         self.recordingTimer?.fire()
     }
     
-    // 録音レベル検知処理を停止
-    func stopUpdatingVolume() {
-        // Finish observation
-        self.recordingTimer.invalidate()
-        self.recordingTimer = nil
-        AudioQueueFlush(self.queue)
-        AudioQueueStop(self.queue, false)
-        AudioQueueDispose(self.queue, true)
-    }
+   m
     
     var levelMeter = AudioQueueLevelMeterState()
     func detectVolume(timer: Timer) {

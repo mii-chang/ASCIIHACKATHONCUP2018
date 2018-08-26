@@ -9,28 +9,73 @@
 import UIKit
 
 class ViewController: UIViewController {
+    var osc = OscSend()
+    var timer = Timer()
+    var timerInterval = 0.05
+    var playerId = 0
+    /**
+     * 1 = iPhone
+     * 2 = mac
+     */
+    var deviceType = 1
     
     @IBOutlet var button: UIButton!
-    @IBAction func click(sender: AnyObject) {
-        var osc = OscSendViewController()
-        osc.viewDidLoad()
+    @IBOutlet var segmentControl: UISegmentedControl!
+    
+    @IBAction func segment(senfer: UISegmentedControl){
+        switch senfer.selectedSegmentIndex {
+        case 0:
+            playerId = 1
+            break
+        case 1:
+            playerId = 2
+            break
+        default:
+            playerId = 0
+            break
+        }
     }
     
-    @IBAction func get(sender: AnyObject) {
-        var oscGet = OscSendViewController()
-        oscGet.viewDidLoad()
+    
+    @IBAction func start(sender: AnyObject) {
+        var message:[Int] = [0]
+        let voiceLevelTrack = VoiceLevelTrack()
+        /**
+         * 0 = false
+         * 1 = true
+         */
+        var isLoudVoice = 0
+        timer = Timer.scheduledTimer(withTimeInterval: timerInterval,
+                                     repeats: true,
+                                     block: {_ in
+                                        /**
+                                         *message = [deviceType, playerId, isLoudVoice]
+                                         */
+                                        print(voiceLevelTrack.sensorValue.volumeValue)
+                                        if(voiceLevelTrack.sensorValue.volumeValue > -1){
+                                            isLoudVoice = 1
+                                        }else {
+                                            isLoudVoice = 0
+                                        }
+                                        message = [deviceType, self.playerId, isLoudVoice]
+                                        self.osc.sendOSC(message:message)
+        })
     }
-
+    
+    @IBAction func stop(sender: AnyObject){
+        timer.invalidate()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
-
+    
+    
 }
 
