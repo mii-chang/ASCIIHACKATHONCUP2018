@@ -26,6 +26,8 @@ public class OSCController : MonoBehaviour {
     private Subject<DeviceData> deviceDataSubject = new Subject<DeviceData>();
 
     void Start() {
+        team1DeviceData = new DeviceData(1);
+        team2DeviceData = new DeviceData(2);
         OSCHandler.Instance.Init(InComingPort);
         servers = new Dictionary<string, ServerLog>();
     }
@@ -39,36 +41,48 @@ public class OSCController : MonoBehaviour {
                 int lastPacketIndex = item.Value.packets.Count - 1;
                 var add = item.Value.packets[lastPacketIndex].Address;
 
-                UnityEngine.Debug.Log(String.Format("SERVER: {0} ADDRESS: {1} VALUE 0: {2}",
-                item.Key, // Server name
-                item.Value.packets[lastPacketIndex].Address, // OSC address
-                item.Value.packets[lastPacketIndex].Data[0])); //First data value
+                //UnityEngine.Debug.Log(String.Format("SERVER: {0} ADDRESS: {1} VALUE 0: {2}",
+                //item.Key, // Server name
+                //item.Value.packets[lastPacketIndex].Address, // OSC address
+                //item.Value.packets[lastPacketIndex].Data[0])); //First data value
 
                 if (add == "#bundle") {
+                    OSCPacket oscPacket = item.Value.packets[lastPacketIndex].Data[0] as OSCPacket;
+                    team1DeviceData.isJump = oscPacket.Data[0].ToString() == "0" ? false : true;
+                    team2DeviceData.isJump = oscPacket.Data[1].ToString() == "0" ? false : true;
+                } else {
+                    IEnumerable receiveEnumerable = item.Value.packets[lastPacketIndex].Data as IEnumerable;
+                    int elementCount = 0;
+                    int team = 1;
 
-                }
+                    foreach (object element in receiveEnumerable) {
 
-                print("address: " + item.Value.packets[lastPacketIndex].Address);
-
-                OSCPacket oscPacket = item.Value.packets[lastPacketIndex].Data[0] as OSCPacket;
-
-                print("packet" + oscPacket.Data[1]);
-
-                IEnumerable receiveEnumerable = item.Value.packets[lastPacketIndex].Data as IEnumerable;
-                print("count: " + item.Value.packets[lastPacketIndex].Data.Count);
-                foreach (object element in receiveEnumerable) {
-                    var hoge = (string)element;
-                    print(hoge);
-
+                        if (elementCount == 0) {
+                            team = (int)element;
+                        }
+                        if (elementCount == 1) {
+                            if (team == 1) {
+                                team1DeviceData.isLoudVoice = (int)element == 0 ? false : true;
+                                Debug.Log("aaaa");
+                            }
+                            if (team == 2) team2DeviceData.isLoudVoice = (int)element == 0 ? false : true;
+                        }
+                        elementCount++;
+                    }
                 }
             }
+            deviceDataSubject.OnNext(team1DeviceData);
+            deviceDataSubject.OnNext(team2DeviceData);
         }
     }
 }
 
 public class DeviceData {
     public int teamNum;
-    public int voiceLevel;
+    public bool isLoudVoice;
     public bool isJump;
+    public DeviceData(int teamNum) {
+        this.teamNum = teamNum;
+    }
 }
 

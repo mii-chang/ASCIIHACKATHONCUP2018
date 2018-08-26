@@ -2,12 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UniRx;
 
 public class Team1NoteManager : MonoBehaviour {
     public const int BPM = 170;
     public const float BeatTime = 60f / BPM / 4f;
     public const float DisplayTime = 1.5f;
-    public const float StartTime = 0;
+    public const float StartTime = 0.485f;
     public const float MissTime = 0.2f;
 
     public const int FireWorkMaxType = 3;
@@ -17,6 +18,7 @@ public class Team1NoteManager : MonoBehaviour {
     [SerializeField] private TextAsset data;
     [SerializeField] private Team1Note noteBase;
     [SerializeField] private GameObject[] fireWorkObj;
+    [SerializeField] private OSCController oscController;
 
 
     private Queue<Team1NoteData> noteDatas = new Queue<Team1NoteData>();
@@ -36,6 +38,26 @@ public class Team1NoteManager : MonoBehaviour {
             }
             time += BeatTime;
         }
+
+        oscController.onDeviceDataObservable
+                     .Where(x => x.teamNum == 1)
+                     .Subscribe(x =>
+                     {
+                         for (int i = 0; i < FireWorkMaxType; i++) {
+                             if (i == 0 && !x.isJump) continue;
+                             if (i == 2 && !x.isLoudVoice) continue;
+                             if (i == 1 && !(x.isJump && x.isLoudVoice)) continue;
+
+                             var note = notes.FirstOrDefault(n => n.Data.Type == i);
+                             if (note == null) {
+                                 continue;
+                             }
+
+                             if (Mathf.Abs(note.Data.Time - sound.Time) < MissTime) {
+                                 Evaluate(note, true);
+                             }
+                         }
+                     });
     }
 
     void Update() {
@@ -45,19 +67,6 @@ public class Team1NoteManager : MonoBehaviour {
             note.transform.SetParent(transform);
             note.SetData(data);
             notes.Add(note);
-        }
-
-        for (int i = 0; i < FireWorkMaxType; i++) {
-            //if (Input.GetKeyDown(keys[i])) {
-            //    var note = notes.FirstOrDefault(n => n.Data.Type == i);
-            //    if (note == null) {
-            //        continue;
-            //    }
-
-            //    if (Mathf.Abs(note.Data.Time - sound.Time) < MissTime) {
-            //        Evaluate(note, true);
-            //    }
-            //}
         }
     }
 
