@@ -12,6 +12,7 @@
 		6815F97221312B6C00B97C8C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6815F97021312B6C00B97C8C /* Main.storyboard */; };
 		6815F97421312B6E00B97C8C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6815F97321312B6E00B97C8C /* Assets.xcassets */; };
 		6815F97721312B6F00B97C8C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6815F97521312B6F00B97C8C /* LaunchScreen.storyboard */; };
+		68BA3B0B21317CB200CB47D9 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 68BA3B0A21317CB200CB47D9 /* icon.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +23,7 @@
 		6815F97321312B6E00B97C8C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6815F97621312B6F00B97C8C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6815F97821312B6F00B97C8C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		68BA3B0A21317CB200CB47D9 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +56,7 @@
 		6815F96B21312B6C00B97C8C /* voice */ = {
 			isa = PBXGroup;
 			children = (
+				68BA3B0A21317CB200CB47D9 /* icon.png */,
 				6815F96C21312B6C00B97C8C /* AppDelegate.swift */,
 				6815F96E21312B6C00B97C8C /* ViewController.swift */,
 				6815F97021312B6C00B97C8C /* Main.storyboard */,
@@ -122,6 +125,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				68BA3B0B21317CB200CB47D9 /* icon.png in Resources */,
 				6815F97721312B6F00B97C8C /* LaunchScreen.storyboard in Resources */,
 				6815F97421312B6E00B97C8C /* Assets.xcassets in Resources */,
 				6815F97221312B6C00B97C8C /* Main.storyboard in Resources */,
@@ -288,7 +292,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.yurikya.voice;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yuri.voice;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -307,7 +311,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.yurikya.voice;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yuri.voice;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

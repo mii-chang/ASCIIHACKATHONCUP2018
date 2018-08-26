@@ -28,52 +28,8 @@ class ViewController: UIViewController {
     
     @IBOutlet var label: UILabel!
     @IBOutlet var levelMeterlabel: UILabel!
+    @IBOutlet var accelelabel: UILabel!
     
-    //ジャイロセンサー
-    @IBOutlet weak var xGyroLabel: UILabel!
-    @IBOutlet weak var yGyroLabel: UILabel!
-    @IBOutlet weak var zGyroLabel: UILabel!
-    @IBOutlet weak var xGravityLabel: UILabel!
-    @IBOutlet weak var yGravityLabel: UILabel!
-    @IBOutlet weak var zGravityLabel: UILabel!
-    @IBOutlet weak var pitchLabel: UILabel!
-    @IBOutlet weak var rollLabel: UILabel!
-    @IBOutlet weak var yawLabel: UILabel!
-
-    let cmManager = CMMotionManager()
-
-    @IBAction func tapStart(sender: AnyObject) {
-        cmManager.deviceMotionUpdateInterval = 0.1
-        let handler:CMDeviceMotionHandler = {
-            (motionData: CMDeviceMotion?, error: NSError?) -> Void in
-            self.motionAnimation(motionData: motionData, error: error! as NSError)
-            } as! CMDeviceMotionHandler
-        cmManager.startDeviceMotionUpdates(to: OperationQueue.main, withHandler: handler)
-    }
-
-    @IBAction func tapStop(sender: AnyObject) {
-        if (cmManager.isDeviceMotionActive) {
-            cmManager.stopDeviceMotionUpdates()
-        }
-    }
-
-    func motionAnimation(motionData: CMDeviceMotion?, error: NSError?) {
-        if let motion = motionData {
-            xGyroLabel.text = String(format:"%.2f", motion.rotationRate.x)
-            yGyroLabel.text = String(format:"%.2f", motion.rotationRate.y)
-            zGyroLabel.text = String(format:"%.2f", motion.rotationRate.z)
-
-            xGravityLabel.text = String(format:"%.2f", motion.gravity.x)
-            yGravityLabel.text = String(format:"%.2f", motion.gravity.y)
-            zGravityLabel.text = String(format:"%.2f", motion.gravity.z)
-
-            pitchLabel.text = String(format:"%.2f", motion.attitude.pitch)
-            rollLabel.text = String(format:"%.2f", motion.attitude.roll)
-            yawLabel.text = String(format:"%.2f", motion.attitude.yaw)
-        }
-    }
-
-    //ここまでジャイロ
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -190,6 +146,11 @@ class ViewController: UIViewController {
         //statusImage.isHidden = (levelMeter.mPeakPower >= -1.0) ? false : true
         levelMeterlabel.text = String(levelMeter.mPeakPower)
         print(levelMeter.mPeakPower)
+        if levelMeter.mPeakPower > -8.0 {
+            levelMeterlabel.textColor = UIColor.orange
+        }else{
+            levelMeterlabel.textColor = UIColor.black
+        }
         setLabelText()
     }
     
@@ -214,6 +175,23 @@ class ViewController: UIViewController {
         accelerometerX.text = String(format: "%.3f", acceleX)
         accelerometerY.text = String(format: "%.3f", acceleY)
         accelerometerZ.text = String(format: "%.3f", acceleZ)
+        
+        var vec = sqrt(pow(acceleX,2) + pow(acceleY, 2) + pow(acceleZ, 2))
+        print("vec: \(vec)")
+        if vec > 1.1 || 0.9 > vec {
+//           vec *= 1
+            accelelabel.text = String("🎆")
+            accelerometerY.textColor = UIColor.red
+            print("🎆")
+        }else{
+//            vec *= -1
+            accelelabel.text = String("☁️")
+            accelerometerY.textColor = UIColor.black
+            print("☁️")
+        }
+//        accelelabel.text = String(vec)
+//        print(vec)
+    
     }
     
     //どこかに実装
@@ -228,3 +206,4 @@ class ViewController: UIViewController {
         
     }
 }
+

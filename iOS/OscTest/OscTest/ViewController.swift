@@ -12,12 +12,12 @@ class ViewController: UIViewController {
     
     @IBOutlet var button: UIButton!
     @IBAction func click(sender: AnyObject) {
-        var osc = OscSendViewController()
+        let osc = OscSendViewController()
         osc.viewDidLoad()
     }
     
     @IBAction func get(sender: AnyObject) {
-        var oscGet = OscSendViewController()
+        let oscGet = OscSendViewController()
         oscGet.viewDidLoad()
     }
 
