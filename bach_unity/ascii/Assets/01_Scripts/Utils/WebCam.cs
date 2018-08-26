@@ -8,6 +8,7 @@ public class WebCam : MonoBehaviour {
     public int FPS = 15;
 
     public Material material;
+    private int photoIndex;
 
     WebCamTexture webcamTexture;
 
@@ -30,9 +31,14 @@ public class WebCam : MonoBehaviour {
 
     void Update() {
         if (Input.GetKeyDown(KeyCode.Space)) {
-            if (webcamTexture != null) {
-                SaveToPNGFile(webcamTexture.GetPixels(), Application.dataPath + "/../SavedScreen.png");
-            }
+            SaveImage();
+        }
+    }
+
+    public void SaveImage() {
+        if (webcamTexture != null) {
+            SaveToPNGFile(webcamTexture.GetPixels(), Application.dataPath + "/../images/" + photoIndex.ToString("00000000") + ".png");
+            photoIndex++;
         }
     }
 

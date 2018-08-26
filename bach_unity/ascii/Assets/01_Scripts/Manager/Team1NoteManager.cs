@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 
 public class Team1NoteManager : MonoBehaviour {
-    public const int BPM = 137;
+    public const int BPM = 170;
     public const float BeatTime = 60f / BPM / 4f;
     public const float DisplayTime = 1.5f;
-    public const float StartTime = 4.411f;
+    public const float StartTime = 0;
     public const float MissTime = 0.2f;
 
     public const int FireWorkMaxType = 3;
@@ -16,7 +16,8 @@ public class Team1NoteManager : MonoBehaviour {
     [SerializeField] private SoundManager sound;
     [SerializeField] private TextAsset data;
     [SerializeField] private Team1Note noteBase;
-    [SerializeField] private KeyCode[] keys;
+    [SerializeField] private GameObject[] fireWorkObj;
+
 
     private Queue<Team1NoteData> noteDatas = new Queue<Team1NoteData>();
     private List<Team1Note> notes = new List<Team1Note>();
@@ -63,11 +64,11 @@ public class Team1NoteManager : MonoBehaviour {
     public void Evaluate(Team1Note note, bool isPerfect) {
         if (isPerfect) {
             sound.PlaySE();
-            //combo.AddScore();
-            note.Fired();
+            note.Fired(fireWorkObj[note.Data.Type]);
             PerfectCount++;
+            combo.AddScore();
         } else {
-            //combo.Reset();
+            combo.Reset();
             MissCount++;
         }
 

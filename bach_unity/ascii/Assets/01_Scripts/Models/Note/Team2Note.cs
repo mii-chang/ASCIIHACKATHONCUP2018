@@ -8,6 +8,7 @@ public class Team2Note : MonoBehaviour {
     [SerializeField] private SoundManager sound;
     [SerializeField] private Transform[] muzzlePositions;
 
+
     public Team2NoteData Data { get; private set; }
 
     public void SetData(Team2NoteData data) {
@@ -15,18 +16,21 @@ public class Team2Note : MonoBehaviour {
         gameObject.SetActive(true);
     }
 
+    private void Start() {
+        transform.position = muzzlePositions[Data.Type].position;
+        GetComponent<ParticleSystem>().Play();
+    }
+
     void Update() {
         var t = (Data.Time - sound.Time);
-        var rate = t / Team2NoteManager.DisplayTime;
-        var targetPosition = muzzlePositions[Data.Type].position;
-        transform.localPosition = new Vector3(
-            targetPosition.x,
-            Mathf.Lerp(targetPosition.y, StartPositionY, rate),
-            0
-        );
 
         if (t < -Team2NoteManager.MissTime) {
             manager.Evaluate(this, false);
         }
+    }
+
+    public void Fired(GameObject fireWorkObj) {
+        var obj = Instantiate(fireWorkObj, transform.position + Vector3.up * 76, Quaternion.identity) as GameObject;
+        obj.GetComponent<ParticleSystem>().Play();
     }
 }
