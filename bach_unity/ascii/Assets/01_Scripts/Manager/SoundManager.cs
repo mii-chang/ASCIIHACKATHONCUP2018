@@ -9,6 +9,7 @@ public class SoundManager : MonoBehaviour {
     [SerializeField] private Team2ComboManager team2ComboManager;
     [SerializeField] private AudioSource bgm;
     [SerializeField] private AudioClip se;
+    [SerializeField] private DataDrawer dataDrawer;
 
     public float Time { get { return bgm.time; } }
 
@@ -29,11 +30,13 @@ public class SoundManager : MonoBehaviour {
             team1ComboManager.MaxCombo,
             team1NoteManager.PerfectCount,
             team1NoteManager.MissCount,
+            dataDrawer.resultPoint.team1Score,
             team2ComboManager.MaxCombo,
             team2NoteManager.PerfectCount,
-            team2NoteManager.MissCount
+            team2NoteManager.MissCount,
+            dataDrawer.resultPoint.team2Score
         );
-        SceneManager.UnloadScene("Live");
+        SceneManager.UnloadScene("Sub");
     }
 
     public void PlaySE() {

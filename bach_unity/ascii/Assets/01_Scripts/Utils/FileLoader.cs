@@ -8,23 +8,24 @@ public class FileLoader : MonoBehaviour {
 
     string tempMes = "[";
 
-    public GameObject[] user1TextObjs;
-    public Text[] user1Text;
-    public GameObject[] user2TextObjs;
-    public Text[] user2Text;
+    //public GameObject[] user1TextObjs;
+    //public Text[] user1Text;
+    //public GameObject[] user2TextObjs;
+    //public Text[] user2Text;
 
-    static float x;
-    static float y;
     List<Vector2> player1 = new List<Vector2>();
     List<Vector2> player2 = new List<Vector2>();
 
-    private void Awake() {
-        user1TextObjs = GameObject.FindGameObjectsWithTag("user1_texts");
-        user1Text = user1TextObjs.Select(obj => obj.GetComponent<Text>()).Reverse().ToArray();
+    public float x;
+    public float y;
 
-        user2TextObjs = GameObject.FindGameObjectsWithTag("user2_texts");
-        user2Text = user2TextObjs.Select(obj => obj.GetComponent<Text>()).Reverse().ToArray();
-    }
+    //private void Awake() {
+    //    user1TextObjs = GameObject.FindGameObjectsWithTag("user1_texts");
+    //    user1Text = user1TextObjs.Select(obj => obj.GetComponent<Text>()).Reverse().ToArray();
+
+    //    user2TextObjs = GameObject.FindGameObjectsWithTag("user2_texts");
+    //    user2Text = user2TextObjs.Select(obj => obj.GetComponent<Text>()).Reverse().ToArray();
+    //}
 
 
     public OpenPose ReadOpenPoseJson(string json) {
@@ -43,34 +44,37 @@ public class FileLoader : MonoBehaviour {
     }
 
 
-    public void DrawOpenPoseData(OpenPose data) {
+    public ResultPoint DrawOpenPoseData(OpenPose data) {
         int index = 0;
-        if (data.people.Count == 0) return;
+        if (data.people.Count != 2) return null;
         data.people[0].pose_keypoints.ForEach(points =>
         {
             if (index % 3 == 0) {
                 tempMes += points.ToString("F1") + ", ";
+                x = points;
             } else if (index % 3 == 1) {
                 tempMes += points.ToString("F1") + "]";
+                y = points;
             }
 
             if (index % 3 == 2) {
-                user1Text[index / 3].text = tempMes;
+                player1.Add(new Vector2(x, y));
                 tempMes = "[";
             }
             index++;
         });
-        if (data.people.Count == 1) return;
         data.people[1].pose_keypoints.ForEach(points =>
         {
             if (index % 3 == 0) {
                 tempMes += points.ToString("F1") + ", ";
+                x = points;
             } else if (index % 3 == 1) {
                 tempMes += points.ToString("F1") + "]";
+                y = points;
             }
 
             if (index % 3 == 2) {
-                user2Text[index / 3].text = tempMes;
+                player2.Add(new Vector2(x, y));
                 tempMes = "[";
             }
             index++;
@@ -82,14 +86,25 @@ public class FileLoader : MonoBehaviour {
             center_x, center_y
         );
 
-        float leg_radius = GetAngle(center, player1[10], player1[13]);
-        float leg_point = leg_radius * 100 / 180;
+        float player1_leg_radius = GetAngle(center, player1[10], player1[13]);
+        float player1_leg_point = player1_leg_radius * 100 / 180;
+        float player1_arm_radius = GetAngle(player1[1], player1[4], player1[7]);
+        float player1_arm_point = 100 - Mathf.Abs(120 - player1_arm_radius);
 
-        float arm_radius = GetAngle(player1[1], player1[4], player1[7]);
-        float arm_point = 100 - Mathf.Abs(120 - arm_radius);
+        float player2_leg_radius = GetAngle(center, player2[10], player2[13]);
+        float player2_leg_point = player2_leg_radius * 100 / 180;
+        float player2_arm_radius = GetAngle(player2[1], player2[4], player2[7]);
+        float player2_arm_point = 100 - Mathf.Abs(120 - player2_arm_radius);
 
-        print(leg_point);
-        print(arm_point);
+        print(player1_leg_point);
+        print(player1_arm_point);
+
+        var resultPoint = new ResultPoint();
+
+        resultPoint.team1Score = Mathf.FloorToInt(player1_arm_point) + Mathf.FloorToInt(player1_leg_point);
+        resultPoint.team2Score = Mathf.FloorToInt(player2_arm_point) + Mathf.FloorToInt(player2_leg_point);
+
+        return resultPoint;
     }
 
 }

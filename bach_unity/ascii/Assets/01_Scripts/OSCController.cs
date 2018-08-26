@@ -41,11 +41,6 @@ public class OSCController : MonoBehaviour {
                 int lastPacketIndex = item.Value.packets.Count - 1;
                 var add = item.Value.packets[lastPacketIndex].Address;
 
-                //UnityEngine.Debug.Log(String.Format("SERVER: {0} ADDRESS: {1} VALUE 0: {2}",
-                //item.Key, // Server name
-                //item.Value.packets[lastPacketIndex].Address, // OSC address
-                //item.Value.packets[lastPacketIndex].Data[0])); //First data value
-
                 if (add == "#bundle") {
                     OSCPacket oscPacket = item.Value.packets[lastPacketIndex].Data[0] as OSCPacket;
                     team1DeviceData.isJump = oscPacket.Data[0].ToString() == "0" ? false : true;

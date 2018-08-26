@@ -7,6 +7,8 @@ public class Team1Note : MonoBehaviour {
     [SerializeField] private Team1NoteManager manager;
     [SerializeField] private SoundManager sound;
     [SerializeField] private Transform[] muzzlePositions;
+    [SerializeField] private GameObject lineObj;
+    private GameObject line;
 
     private bool isCreated;
 
@@ -15,6 +17,8 @@ public class Team1Note : MonoBehaviour {
     public void SetData(Team1NoteData data) {
         Data = data;
         gameObject.SetActive(true);
+        line = Instantiate(lineObj);
+        line.transform.SetParent(manager.transform);
     }
 
     private void Start() {
@@ -23,9 +27,17 @@ public class Team1Note : MonoBehaviour {
     }
     void Update() {
         var t = (Data.Time - sound.Time);
+        var rate = t / Team1NoteManager.DisplayTime;
+
+
+        line.transform.localPosition = new Vector3(
+            muzzlePositions[Data.Type].position.x,
+            Mathf.Lerp(muzzlePositions[Data.Type].position.y, 5, rate),
+            0
+        );
 
         if (t < -Team1NoteManager.MissTime) {
-            manager.Evaluate(this, true);
+            manager.Evaluate(this, false);
         }
     }
 
