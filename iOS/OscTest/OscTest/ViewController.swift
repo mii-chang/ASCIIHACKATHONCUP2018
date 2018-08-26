@@ -13,12 +13,7 @@ class ViewController: UIViewController {
     var timer = Timer()
     var timerInterval = 0.05
     var playerId = 0
-    /**
-     * 1 = iPhone
-     * 2 = mac
-     */
-    var deviceType = 1
-    
+
     @IBOutlet var button: UIButton!
     @IBOutlet var segmentControl: UISegmentedControl!
     
@@ -57,7 +52,7 @@ class ViewController: UIViewController {
                                         }else {
                                             isLoudVoice = 0
                                         }
-                                        message = [deviceType, self.playerId, isLoudVoice]
+                                        message = [self.playerId, isLoudVoice]
                                         self.osc.sendOSC(message:message)
         })
     }
