@@ -12,7 +12,7 @@ class ViewController: UIViewController {
     var osc = OscSend()
     var timer = Timer()
     var timerInterval = 0.05
-    var playerId = 0
+    var playerId = 1
 
     @IBOutlet var button: UIButton!
     @IBOutlet var segmentControl: UISegmentedControl!
@@ -26,7 +26,7 @@ class ViewController: UIViewController {
             playerId = 2
             break
         default:
-            playerId = 0
+            playerId = 1
             break
         }
     }
