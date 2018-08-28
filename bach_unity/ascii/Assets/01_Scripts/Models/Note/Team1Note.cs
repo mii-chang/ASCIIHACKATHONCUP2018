@@ -32,7 +32,7 @@ public class Team1Note : MonoBehaviour {
 
         line.transform.localPosition = new Vector3(
             muzzlePositions[Data.Type].position.x,
-            Mathf.Lerp(muzzlePositions[Data.Type].position.y, 5, rate),
+            Mathf.Lerp(muzzlePositions[Data.Type].position.y, 76, rate),
             0
         );
 

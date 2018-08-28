@@ -28,9 +28,9 @@ public class Team2Note : MonoBehaviour {
         var t = (Data.Time - sound.Time);
         var rate = t / Team2NoteManager.DisplayTime;
 
-        line.transform.localPosition = new Vector3(
+        line.transform.position = new Vector3(
             muzzlePositions[Data.Type].position.x,
-            Mathf.Lerp(muzzlePositions[Data.Type].position.y, 5, rate),
+            Mathf.Lerp(muzzlePositions[Data.Type].position.y, 7, rate),
             0
         );
 

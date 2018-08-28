@@ -8,8 +8,9 @@ public class TitleScene : MonoBehaviour {
 
     [SerializeField] private Button button;
 
-    void Start () {
-        button.onClick.AddListener(() => {
+    void Start() {
+        button.onClick.AddListener(() =>
+        {
             UnityEngine.SceneManagement.SceneManager.LoadScene(liveScene);
         });
     }
