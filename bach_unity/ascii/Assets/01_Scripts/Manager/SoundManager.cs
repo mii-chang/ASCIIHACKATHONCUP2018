@@ -29,14 +29,8 @@ public class SoundManager : MonoBehaviour {
         yield return loader;
 
         FindObjectOfType<ResultManager>().SetData(
-            team1ComboManager.MaxCombo,
-            team1NoteManager.PerfectCount,
-            team1NoteManager.MissCount,
-            dataDrawer.resultPoint.team1Score,
-            team2ComboManager.MaxCombo,
-            team2NoteManager.PerfectCount,
-            team2NoteManager.MissCount,
-            dataDrawer.resultPoint.team2Score
+            scoreManager.scoreDataDic[1],
+            scoreManager.scoreDataDic[2]
         );
         SceneManager.UnloadScene("Sub");
     }

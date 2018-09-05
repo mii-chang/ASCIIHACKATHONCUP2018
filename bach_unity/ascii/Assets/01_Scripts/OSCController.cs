@@ -15,15 +15,11 @@ public class OSCController : MonoBehaviour {
     private DeviceData team2DeviceData;
 
 
-    public IObservable<DeviceData> onDeviceDataObservable
-    {
-        get
-        {
-            return deviceDataSubject.AsObservable();
-        }
+    public IObservable<DeviceData> onDeviceDataObservable {
+        get { return deviceDataSubject.AsObservable(); }
     }
 
-    private Subject<DeviceData> deviceDataSubject = new Subject<DeviceData>();
+    public Subject<DeviceData> deviceDataSubject = new Subject<DeviceData>();
 
     void Start() {
         team1DeviceData = new DeviceData(1);
