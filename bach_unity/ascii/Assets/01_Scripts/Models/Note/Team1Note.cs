@@ -8,22 +8,22 @@ public class Team1Note : MonoBehaviour {
     [SerializeField] private SoundManager sound;
     [SerializeField] private Transform[] muzzlePositions;
     [SerializeField] private GameObject lineObj;
+    [SerializeField] private GameObject puffObj;
     private GameObject line;
-
-    private bool isCreated;
+    private GameObject puff;
 
     public Team1NoteData Data { get; private set; }
 
     public void SetData(Team1NoteData data) {
         Data = data;
         gameObject.SetActive(true);
-        line = Instantiate(lineObj);
-        line.transform.SetParent(manager.transform);
     }
 
     private void Start() {
         transform.position = muzzlePositions[Data.Type].position;
         GetComponent<ParticleSystem>().Play();
+        line = Instantiate(lineObj);
+        line.transform.SetParent(transform);
     }
     void Update() {
         var t = (Data.Time - sound.Time);
@@ -31,18 +31,29 @@ public class Team1Note : MonoBehaviour {
 
 
         line.transform.localPosition = new Vector3(
-            muzzlePositions[Data.Type].position.x,
-            Mathf.Lerp(muzzlePositions[Data.Type].position.y, 76, rate),
-            0
+            0,
+            0,
+            Mathf.Lerp(76, 0, rate)
         );
 
         if (t < -Team1NoteManager.MissTime) {
-            manager.Evaluate(this, false);
+            Destroy(line);
+            if (Random.value > 0.6f)
+                manager.Evaluate(this, false);
+            else
+                manager.Evaluate(this, true);
         }
     }
 
     public void Fired(GameObject fireWorkObj) {
         var obj = Instantiate(fireWorkObj, transform.position + Vector3.up * 76, Quaternion.identity) as GameObject;
         obj.GetComponent<ParticleSystem>().Play();
+    }
+
+    public void Falling() {
+        puff = Instantiate(puffObj);
+        puff.transform.position = muzzlePositions[Data.Type].position + Vector3.up * 76;
+        puff.SetActive(true);
+        puff.GetComponent<ParticleSystem>().Play();
     }
 }

@@ -18,7 +18,7 @@ public class Team2NoteManager : MonoBehaviour {
     [SerializeField] private TextAsset data;
     [SerializeField] private Team2Note noteBase;
     [SerializeField] private GameObject[] fireWorkObj;
-    [SerializeField] private OSCController oscController;
+    [SerializeField] private OscController oscController;
     [SerializeField] private WebCam webCam;
 
 
@@ -41,7 +41,7 @@ public class Team2NoteManager : MonoBehaviour {
         }
 
         oscController.onDeviceDataObservable
-             .Where(x => x.teamNum == 1)
+             .Where(x => x.teamNum == 2)
              .Subscribe(x =>
              {
                  for (int i = 0; i < FireWorkMaxType; i++) {

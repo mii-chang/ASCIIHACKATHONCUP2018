@@ -7,6 +7,8 @@ public class SoundManager : MonoBehaviour {
     [SerializeField] private Team2NoteManager team2NoteManager;
     [SerializeField] private Team1ComboManager team1ComboManager;
     [SerializeField] private Team2ComboManager team2ComboManager;
+    [SerializeField] private NoteManager noteManager;
+    [SerializeField] private ComboManager comboManager;
     [SerializeField] private AudioSource bgm;
     [SerializeField] private AudioClip se;
     [SerializeField] private DataDrawer dataDrawer;

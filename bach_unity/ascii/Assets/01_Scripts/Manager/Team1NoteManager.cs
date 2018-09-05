@@ -18,7 +18,7 @@ public class Team1NoteManager : MonoBehaviour {
     [SerializeField] private TextAsset data;
     [SerializeField] private Team1Note noteBase;
     [SerializeField] private GameObject[] fireWorkObj;
-    [SerializeField] private OSCController oscController;
+    [SerializeField] private OscController oscController;
     [SerializeField] private WebCam webCam;
 
 
@@ -78,8 +78,9 @@ public class Team1NoteManager : MonoBehaviour {
             note.Fired(fireWorkObj[note.Data.Type]);
             PerfectCount++;
             combo.AddScore();
-            webCam.SaveImage();
+            //webCam.SaveImage();
         } else {
+            note.Falling();
             combo.Reset();
             MissCount++;
         }
