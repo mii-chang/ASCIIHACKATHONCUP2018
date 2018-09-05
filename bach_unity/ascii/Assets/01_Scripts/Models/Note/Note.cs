@@ -30,7 +30,6 @@ public class Note : MonoBehaviour {
                 var t = (Data.Time - sound.Time);
                 var rate = t / NoteManager.DisplayTime;
 
-
                 line.transform.localPosition = new Vector3(
                     0,
                     0,
@@ -38,11 +37,7 @@ public class Note : MonoBehaviour {
                 );
 
                 if (t < -NoteManager.MissTime) {
-                    Destroy(line);
-                    if (Random.value > 0.6f)
-                        manager.Evaluate(this, false);
-                    else
-                        manager.Evaluate(this, true);
+                    manager.Evaluate(this, Const.DecesionResult.Miss);
                 }
             });
     }

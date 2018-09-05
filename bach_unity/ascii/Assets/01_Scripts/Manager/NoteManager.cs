@@ -11,7 +11,6 @@ public class NoteManager : MonoBehaviour {
     public const float DisplayTime = 1.5f;
     public const float StartTime = 0.485f;
     public const float MissTime = 0.2f;
-    public IObservable<>
 
     public const int FireWorkMaxType = 3;
 
@@ -26,6 +25,11 @@ public class NoteManager : MonoBehaviour {
     private Queue<NoteData> team2NoteDatas = new Queue<NoteData>();
 
     private List<Note> notes = new List<Note>();
+
+    public IObservable<DecesionResultData> onDecesionResultObservable {
+        get { return decesionResuleSubject.AsObservable(); }
+    }
+    private Subject<DecesionResultData> decesionResuleSubject = new Subject<DecesionResultData>();
 
 
     private void Start() {
@@ -45,12 +49,9 @@ public class NoteManager : MonoBehaviour {
                              if (i == 1 && !(data.isJump && data.isLoudVoice)) continue;
 
                              var note = notes.FirstOrDefault(n => n.Data.Type == i && n.Data.Team == data.teamNum);
-                             if (note == null) {
-                                 continue;
-                             }
-
+                             if (!note) continue;
                              if (Mathf.Abs(note.Data.Time - sound.Time) < MissTime) {
-                                 //Evaluate(note, true);
+                                 Evaluate(note, Const.DecesionResult.Perfect);
                              }
                          }
                      });
@@ -92,19 +93,19 @@ public class NoteManager : MonoBehaviour {
         }
     }
 
-    public void Evaluate(Note note, bool isPerfect) {
-        if (isPerfect) {
-            //sound.PlaySE();
-            note.Fired(fireWorkObj[note.Data.Type]);
-            //PerfectCount++;
-            //combo.AddScore();
-            //webCam.SaveImage();
-        } else {
-            note.Falled();
-            //combo.Reset();
-            //MissCount++;
+    public void Evaluate(Note note, Const.DecesionResult result) {
+        switch (result) {
+            case Const.DecesionResult.Perfect:
+                note.Fired(fireWorkObj[note.Data.Type]);
+                sound.PlaySE();
+                //webCam.SaveImage();
+                break;
+            case Const.DecesionResult.Miss:
+                note.Falled();
+                break;
         }
 
+        decesionResuleSubject.OnNext(new DecesionResultData(note.Data.Team, result));
         notes.Remove(note);
         Destroy(note.gameObject);
     }
@@ -123,3 +124,11 @@ public class NoteData {
     }
 }
 
+public class DecesionResultData {
+    public int teamNum;
+    public Const.DecesionResult result;
+    public DecesionResultData(int teamNum, Const.DecesionResult result) {
+        this.teamNum = teamNum;
+        this.result = result;
+    }
+}

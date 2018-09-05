@@ -6,7 +6,7 @@ using System.Text;
 using UnityOSC;
 using UniRx;
 
-public class OSCController : MonoBehaviour {
+public class OscController : MonoBehaviour {
     #region Network Settings
     public int InComingPort;
     #endregion
