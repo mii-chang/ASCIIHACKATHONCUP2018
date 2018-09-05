@@ -8,10 +8,33 @@ public class WebCam : MonoBehaviour {
     public int FPS = 15;
 
     public Material material;
+    private int photoIndex;
 
     WebCamTexture webcamTexture;
 
     void Start() {
+
+        DirectoryInfo target = new DirectoryInfo(Application.dataPath + "/../outputs/");
+        foreach (FileInfo file in target.GetFiles()) {
+            file.Delete();
+        }
+
+
+        target = new DirectoryInfo(Application.dataPath + "/../images/");
+        foreach (FileInfo file in target.GetFiles()) {
+            file.Delete();
+        }
+
+        target = new DirectoryInfo(Application.dataPath + "/../images/reading/");
+        foreach (FileInfo file in target.GetFiles()) {
+            file.Delete();
+        }
+        target = new DirectoryInfo(Application.dataPath + "/../images/reading/old/");
+        foreach (FileInfo file in target.GetFiles()) {
+            file.Delete();
+        }
+
+
         WebCamDevice[] devices = WebCamTexture.devices;
 
         // display all cameras
@@ -30,9 +53,14 @@ public class WebCam : MonoBehaviour {
 
     void Update() {
         if (Input.GetKeyDown(KeyCode.Space)) {
-            if (webcamTexture != null) {
-                SaveToPNGFile(webcamTexture.GetPixels(), Application.dataPath + "/../SavedScreen.png");
-            }
+            SaveImage();
+        }
+    }
+
+    public void SaveImage() {
+        if (webcamTexture != null) {
+            SaveToPNGFile(webcamTexture.GetPixels(), Application.dataPath + "/../images/" + photoIndex.ToString("00000000") + ".png");
+            photoIndex++;
         }
     }
 
@@ -45,7 +73,6 @@ public class WebCam : MonoBehaviour {
         byte[] png = takenPhoto.EncodeToPNG();
         Destroy(takenPhoto);
 
-        // For testing purposes, also write to a file in the project folder
         File.WriteAllBytes(filename, png);
     }
 }

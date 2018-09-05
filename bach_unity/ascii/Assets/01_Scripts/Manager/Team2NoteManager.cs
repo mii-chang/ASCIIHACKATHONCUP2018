@@ -2,12 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UniRx;
 
 public class Team2NoteManager : MonoBehaviour {
-    public const int BPM = 100;
+    public const int BPM = 170;
     public const float BeatTime = 60f / BPM / 4f;
     public const float DisplayTime = 1.5f;
-    public const float StartTime = 0f;
+    public const float StartTime = 0;
     public const float MissTime = 0.2f;
 
     public const int FireWorkMaxType = 3;
@@ -16,7 +17,10 @@ public class Team2NoteManager : MonoBehaviour {
     [SerializeField] private SoundManager sound;
     [SerializeField] private TextAsset data;
     [SerializeField] private Team2Note noteBase;
-    [SerializeField] private KeyCode[] keys;
+    [SerializeField] private GameObject[] fireWorkObj;
+    [SerializeField] private OscController oscController;
+    [SerializeField] private WebCam webCam;
+
 
     private Queue<Team2NoteData> noteDatas = new Queue<Team2NoteData>();
     private List<Team2Note> notes = new List<Team2Note>();
@@ -35,6 +39,26 @@ public class Team2NoteManager : MonoBehaviour {
             }
             time += BeatTime;
         }
+
+        oscController.onDeviceDataObservable
+             .Where(x => x.teamNum == 2)
+             .Subscribe(x =>
+             {
+                 for (int i = 0; i < FireWorkMaxType; i++) {
+                     if (i == 0 && !x.isJump) continue;
+                     if (i == 2 && !x.isLoudVoice) continue;
+                     if (i == 1 && !(x.isJump && x.isLoudVoice)) continue;
+
+                     var note = notes.FirstOrDefault(n => n.Data.Type == i);
+                     if (note == null) {
+                         continue;
+                     }
+
+                     if (Mathf.Abs(note.Data.Time - sound.Time) < MissTime) {
+                         Evaluate(note, true);
+                     }
+                 }
+             });
     }
 
     void Update() {
@@ -46,25 +70,16 @@ public class Team2NoteManager : MonoBehaviour {
             notes.Add(note);
         }
 
-        for (int i = 0; i < FireWorkMaxType; i++) {
-            if (Input.GetKeyDown(keys[i])) {
-                var note = notes.FirstOrDefault(n => n.Data.Type == i);
-                if (note == null) {
-                    continue;
-                }
 
-                if (Mathf.Abs(note.Data.Time - sound.Time) < MissTime) {
-                    Evaluate(note, true);
-                }
-            }
-        }
     }
 
     public void Evaluate(Team2Note note, bool isPerfect) {
         if (isPerfect) {
             sound.PlaySE();
+            note.Fired(fireWorkObj[note.Data.Type]);
             combo.AddScore();
             PerfectCount++;
+            webCam.SaveImage();
         } else {
             combo.Reset();
             MissCount++;
