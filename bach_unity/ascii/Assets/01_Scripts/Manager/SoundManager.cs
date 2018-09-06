@@ -10,6 +10,8 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager> {
     [SerializeField] private AudioClip se;
     [SerializeField] private DataDrawer dataDrawer;
     public float Time { get { return bgm.time; } }
+    public float Rate { get { return bgm.time / bgm.clip.length; } }
+    public float RemainingTime { get { return bgm.clip.length - bgm.time; } }
 
     private NoteManager noteManager;
     private ScoreManager scoreManager;
