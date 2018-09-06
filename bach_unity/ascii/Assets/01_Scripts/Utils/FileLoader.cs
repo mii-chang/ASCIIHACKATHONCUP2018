@@ -50,8 +50,7 @@ public class FileLoader : MonoBehaviour {
         if (data.people.Count != 2) return null;
         data.people[0].pose_keypoints.ForEach(points =>
         {
-            if (index % 3 == 0)
-            {
+            if (index % 3 == 0) {
                 tempMes += points.ToString("F1") + ", ";
                 x = points;
             } else if (index % 3 == 1) {
@@ -67,8 +66,7 @@ public class FileLoader : MonoBehaviour {
         });
         data.people[1].pose_keypoints.ForEach(points =>
         {
-            if (index % 3 == 0)
-            {
+            if (index % 3 == 0) {
                 tempMes += points.ToString("F1") + ", ";
                 x = points;
             } else if (index % 3 == 1) {
@@ -108,21 +106,5 @@ public class FileLoader : MonoBehaviour {
         resultPoint.team2Score = Mathf.FloorToInt(player2_arm_point) + Mathf.FloorToInt(player2_leg_point);
 
         return resultPoint;
-    }
-
-        float center_x = (player1[11][0] - player1[8][0]) / 2 + player1[8][0];
-        float center_y = (player1[11][1] - player1[8][1]) / 2 + player1[8][1];
-        Vector2 center = new Vector2(
-            center_x, center_y
-        );
-
-        float leg_radius = GetAngle(center, player1[10], player1[13]);
-        float leg_point  = leg_radius * 100 / 180;
-
-        float arm_radius = GetAngle(player1[1], player1[4], player1[7]);
-        float arm_point  = 100 - Math.Abs(120 - arm_radius);
-
-        print(leg_point);
-        print(arm_point);
     }
 }

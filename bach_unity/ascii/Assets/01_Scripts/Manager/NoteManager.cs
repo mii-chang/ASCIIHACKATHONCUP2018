@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+
+using System;
 using UniRx;
 using UniRx.Triggers;
 
-public class NoteManager : MonoBehaviour {
+public class NoteManager : SingletonMonoBehaviour<NoteManager> {
     public const int BPM = 170;
     public const float BeatTime = 60f / BPM / 4f;
     public const float DisplayTime = 1.5f;
@@ -48,10 +50,10 @@ public class NoteManager : MonoBehaviour {
                              if (i == 2 && !data.isLoudVoice) continue;
                              if (i == 1 && !(data.isJump && data.isLoudVoice)) continue;
 
-                             var note = notes.FirstOrDefault(n => n.Data.Type == i && n.Data.Team == data.teamNum);
+                             var note = notes.FirstOrDefault(n => n.Data.Type == i && n.Data.Team == data.team);
                              if (!note) continue;
                              if (Mathf.Abs(note.Data.Time - sound.Time) < MissTime) {
-                                 Evaluate(note, Const.DecesionResult.Perfect);
+                                 Evaluate(note, Const.DecisionResult.Perfect);
                              }
                          }
                      });
@@ -85,22 +87,22 @@ public class NoteManager : MonoBehaviour {
             foreach (var c in s) {
                 var type = c - '0';
                 if (type >= 0 && type < FireWorkMaxType) {
-                    team1NoteDatas.Enqueue(new NoteData(1, type, time));
-                    team2NoteDatas.Enqueue(new NoteData(2, type, time));
+                    team1NoteDatas.Enqueue(new NoteData(Const.Team.team1, type, time));
+                    team2NoteDatas.Enqueue(new NoteData(Const.Team.team2, type, time));
                 }
             }
             time += BeatTime;
         }
     }
 
-    public void Evaluate(Note note, Const.DecesionResult result) {
+    public void Evaluate(Note note, Const.DecisionResult result) {
         switch (result) {
-            case Const.DecesionResult.Perfect:
+            case Const.DecisionResult.Perfect:
                 note.Fired(fireWorkObj[note.Data.Type]);
                 sound.PlaySE();
                 //webCam.SaveImage();
                 break;
-            case Const.DecesionResult.Miss:
+            case Const.DecisionResult.Miss:
                 note.Falled();
                 break;
         }
@@ -113,11 +115,11 @@ public class NoteManager : MonoBehaviour {
 
 
 public class NoteData {
-    public int Team { get; private set; }
+    public Const.Team Team { get; private set; }
     public int Type { get; private set; }
     public float Time { get; private set; }
 
-    public NoteData(int team, int type, float time) {
+    public NoteData(Const.Team team, int type, float time) {
         Team = team;
         Type = type;
         Time = time;
@@ -125,10 +127,10 @@ public class NoteData {
 }
 
 public class DecesionResultData {
-    public int teamNum;
-    public Const.DecesionResult result;
-    public DecesionResultData(int teamNum, Const.DecesionResult result) {
-        this.teamNum = teamNum;
+    public Const.Team team;
+    public Const.DecisionResult result;
+    public DecesionResultData(Const.Team team, Const.DecisionResult result) {
+        this.team = team;
         this.result = result;
     }
 }

@@ -22,8 +22,8 @@ public class OscController : MonoBehaviour {
     public Subject<DeviceData> deviceDataSubject = new Subject<DeviceData>();
 
     void Start() {
-        team1DeviceData = new DeviceData(1);
-        team2DeviceData = new DeviceData(2);
+        team1DeviceData = new DeviceData(Const.Team.team1);
+        team2DeviceData = new DeviceData(Const.Team.team2);
         OSCHandler.Instance.Init(InComingPort);
         servers = new Dictionary<string, ServerLog>();
     }
@@ -69,11 +69,11 @@ public class OscController : MonoBehaviour {
 }
 
 public class DeviceData {
-    public int teamNum;
+    public Const.Team team;
     public bool isLoudVoice;
     public bool isJump;
-    public DeviceData(int teamNum) {
-        this.teamNum = teamNum;
+    public DeviceData(Const.Team team) {
+        this.team = team;
     }
 }
 

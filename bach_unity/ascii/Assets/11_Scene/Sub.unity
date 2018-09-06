@@ -398,7 +398,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e9711b0f026f40bab77f9ce66ba958d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  noteManager: {fileID: 2068405803}
 --- !u!4 &400079423
 Transform:
   m_ObjectHideFlags: 0
@@ -1473,12 +1472,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0071c2e65a30d43a5b435bb8f45cbd2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  team1NoteManager: {fileID: 0}
-  team2NoteManager: {fileID: 0}
-  team1ComboManager: {fileID: 0}
-  team2ComboManager: {fileID: 0}
-  noteManager: {fileID: 0}
-  comboManager: {fileID: 0}
   bgm: {fileID: 943272466}
   se: {fileID: 8300000, guid: 48cde60d3a3d9412caeaf949b6364160, type: 3}
   dataDrawer: {fileID: 418776918}
