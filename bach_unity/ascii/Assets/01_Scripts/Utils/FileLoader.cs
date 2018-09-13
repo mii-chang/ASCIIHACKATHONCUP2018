@@ -9,25 +9,11 @@ public class FileLoader : MonoBehaviour {
 
     string tempMes = "[";
 
-    //public GameObject[] user1TextObjs;
-    //public Text[] user1Text;
-    //public GameObject[] user2TextObjs;
-    //public Text[] user2Text;
-
     List<Vector2> player1 = new List<Vector2>();
     List<Vector2> player2 = new List<Vector2>();
 
     public float x;
     public float y;
-
-    //private void Awake() {
-    //    user1TextObjs = GameObject.FindGameObjectsWithTag("user1_texts");
-    //    user1Text = user1TextObjs.Select(obj => obj.GetComponent<Text>()).Reverse().ToArray();
-
-    //    user2TextObjs = GameObject.FindGameObjectsWithTag("user2_texts");
-    //    user2Text = user2TextObjs.Select(obj => obj.GetComponent<Text>()).Reverse().ToArray();
-    //}
-
 
     public OpenPose ReadOpenPoseJson(string json) {
         return JsonUtility.FromJson<OpenPose>(json);
@@ -51,32 +37,25 @@ public class FileLoader : MonoBehaviour {
         data.people[0].pose_keypoints.ForEach(points =>
         {
             if (index % 3 == 0) {
-                tempMes += points.ToString("F1") + ", ";
                 x = points;
             } else if (index % 3 == 1) {
-                tempMes += points.ToString("F1") + "]";
                 y = points;
             }
-
             if (index % 3 == 2) {
                 player1.Add(new Vector2(x, y));
-                tempMes = "[";
             }
             index++;
         });
         data.people[1].pose_keypoints.ForEach(points =>
         {
             if (index % 3 == 0) {
-                tempMes += points.ToString("F1") + ", ";
                 x = points;
             } else if (index % 3 == 1) {
-                tempMes += points.ToString("F1") + "]";
                 y = points;
             }
 
             if (index % 3 == 2) {
                 player2.Add(new Vector2(x, y));
-                tempMes = "[";
             }
             index++;
         });

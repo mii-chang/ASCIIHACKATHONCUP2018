@@ -53,7 +53,6 @@ public class WebCam : MonoBehaviour {
 
     void Update() {
         if (Input.GetKeyDown(KeyCode.Space)) {
-            SaveImage();
         }
     }
 

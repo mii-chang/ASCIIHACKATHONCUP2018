@@ -59,8 +59,7 @@ public class OSCHandler : MonoBehaviour {
     OSCHandler() {
     }
 
-    public static OSCHandler Instance
-    {
+    public static OSCHandler Instance {
         get
         {
             if (_instance == null) {
@@ -86,7 +85,7 @@ public class OSCHandler : MonoBehaviour {
     /// Initializes the OSC Handler.
     /// Here you can create the OSC servers and clientes.
     /// </summary>
-    public void Init(int inComingPort) {
+    public void Init(int inComingPort, string outGoingAddress, int outGoingPort) {
         //Initialize OSC clients (transmitters)
         // Sender
         //CreateClient("iPhoneTouchOSCApp", IPAddress.Parse(targetAddr), outGoingPort);
@@ -94,19 +93,19 @@ public class OSCHandler : MonoBehaviour {
         //Initialize OSC servers (listeners)
         // Receiver
         CreateServer("SomeOscClient", inComingPort);
+
+        CreateClient("Unity", IPAddress.Parse(outGoingAddress), outGoingPort);
     }
 
     #region Properties
-    public Dictionary<string, ClientLog> Clients
-    {
+    public Dictionary<string, ClientLog> Clients {
         get
         {
             return _clients;
         }
     }
 
-    public Dictionary<string, ServerLog> Servers
-    {
+    public Dictionary<string, ServerLog> Servers {
         get
         {
             return _servers;
@@ -153,7 +152,7 @@ public class OSCHandler : MonoBehaviour {
         _clients.Add(clientId, clientitem);
 
         // Send test message
-        string testaddress = "/test/alive/";
+        string testaddress = "/Unity/";
         OSCMessage message = new OSCMessage(testaddress, destination.ToString());
         message.Append(port); message.Append("OK");
 

@@ -38,6 +38,8 @@ public class NoteManager : SingletonMonoBehaviour<NoteManager> {
         CreateScore();
         CreateNote();
         JudgeNote();
+
+        this.UpdateAsObservable().Where(_ => Input.GetKeyDown(KeyCode.Space)).Subscribe(_ => { oscController.SendScreenShotOSC(); });
     }
 
 

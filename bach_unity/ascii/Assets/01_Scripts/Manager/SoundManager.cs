@@ -18,7 +18,6 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager> {
     private bool isLoading;
 
     private void Start() {
-        bgm.time = 50f;
         scoreManager = ScoreManager.Instance;
         noteManager = NoteManager.Instance;
 
