@@ -6,7 +6,7 @@ using System.Text;
 using UnityOSC;
 using UniRx;
 
-public class OSCController : MonoBehaviour {
+public class OscController : MonoBehaviour {
     #region Network Settings
     public int InComingPort;
     #endregion
@@ -15,19 +15,15 @@ public class OSCController : MonoBehaviour {
     private DeviceData team2DeviceData;
 
 
-    public IObservable<DeviceData> onDeviceDataObservable
-    {
-        get
-        {
-            return deviceDataSubject.AsObservable();
-        }
+    public IObservable<DeviceData> onDeviceDataObservable {
+        get { return deviceDataSubject.AsObservable(); }
     }
 
-    private Subject<DeviceData> deviceDataSubject = new Subject<DeviceData>();
+    public Subject<DeviceData> deviceDataSubject = new Subject<DeviceData>();
 
     void Start() {
-        team1DeviceData = new DeviceData(1);
-        team2DeviceData = new DeviceData(2);
+        team1DeviceData = new DeviceData(Const.Team.team1);
+        team2DeviceData = new DeviceData(Const.Team.team2);
         OSCHandler.Instance.Init(InComingPort);
         servers = new Dictionary<string, ServerLog>();
     }
@@ -73,11 +69,11 @@ public class OSCController : MonoBehaviour {
 }
 
 public class DeviceData {
-    public int teamNum;
+    public Const.Team team;
     public bool isLoudVoice;
     public bool isJump;
-    public DeviceData(int teamNum) {
-        this.teamNum = teamNum;
+    public DeviceData(Const.Team team) {
+        this.team = team;
     }
 }
 

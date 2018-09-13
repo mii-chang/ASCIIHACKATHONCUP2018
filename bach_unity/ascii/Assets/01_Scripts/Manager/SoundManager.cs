@@ -1,26 +1,30 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using UniRx;
+using UniRx.Triggers;
 
-public class SoundManager : MonoBehaviour {
-    [SerializeField] private Team1NoteManager team1NoteManager;
-    [SerializeField] private Team2NoteManager team2NoteManager;
-    [SerializeField] private Team1ComboManager team1ComboManager;
-    [SerializeField] private Team2ComboManager team2ComboManager;
-    [SerializeField] private NoteManager noteManager;
-    [SerializeField] private ComboManager comboManager;
+public class SoundManager : SingletonMonoBehaviour<SoundManager> {
+
     [SerializeField] private AudioSource bgm;
     [SerializeField] private AudioClip se;
     [SerializeField] private DataDrawer dataDrawer;
-
     public float Time { get { return bgm.time; } }
+    public float Rate { get { return bgm.time / bgm.clip.length; } }
+    public float RemainingTime { get { return bgm.clip.length - bgm.time; } }
 
+    private NoteManager noteManager;
+    private ScoreManager scoreManager;
     private bool isLoading;
 
-    void Update() {
-        if (!bgm.isPlaying && !isLoading) {
-            StartCoroutine(loadResult());
-        }
+    private void Start() {
+        bgm.time = 50f;
+        scoreManager = ScoreManager.Instance;
+        noteManager = NoteManager.Instance;
+
+        this.UpdateAsObservable()
+            .Where(_ => !bgm.isPlaying && !isLoading)
+            .Subscribe(_ => StartCoroutine(loadResult()));
     }
 
     private IEnumerator loadResult() {
@@ -28,17 +32,13 @@ public class SoundManager : MonoBehaviour {
         var loader = SceneManager.LoadSceneAsync("Result", LoadSceneMode.Additive);
         yield return loader;
 
-        FindObjectOfType<ResultManager>().SetData(
-            team1ComboManager.MaxCombo,
-            team1NoteManager.PerfectCount,
-            team1NoteManager.MissCount,
-            dataDrawer.resultPoint.team1Score,
-            team2ComboManager.MaxCombo,
-            team2NoteManager.PerfectCount,
-            team2NoteManager.MissCount,
-            dataDrawer.resultPoint.team2Score
+        ResultManager.Instance.SetData(
+            scoreManager.scoreDataDic[Const.Team.team1],
+            scoreManager.scoreDataDic[Const.Team.team2]
         );
-        SceneManager.UnloadScene("Sub");
+
+        ResultManager.Instance.Show();
+        SceneManager.UnloadSceneAsync("Sub");
     }
 
     public void PlaySE() {

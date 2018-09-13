@@ -6,8 +6,7 @@ TagManager:
   tags:
   - FxTemporaire
   - texts
-  - user1_texts
-  - user2_texts
+  - UserScoreTexts
   layers:
   - Default
   - TransparentFX

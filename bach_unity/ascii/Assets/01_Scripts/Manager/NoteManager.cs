@@ -2,16 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+
+using System;
 using UniRx;
 using UniRx.Triggers;
 
-public class NoteManager : MonoBehaviour {
+public class NoteManager : SingletonMonoBehaviour<NoteManager> {
     public const int BPM = 170;
     public const float BeatTime = 60f / BPM / 4f;
     public const float DisplayTime = 1.5f;
     public const float StartTime = 0.485f;
     public const float MissTime = 0.2f;
-    public IObservable<>
 
     public const int FireWorkMaxType = 3;
 
@@ -26,6 +27,11 @@ public class NoteManager : MonoBehaviour {
     private Queue<NoteData> team2NoteDatas = new Queue<NoteData>();
 
     private List<Note> notes = new List<Note>();
+
+    public IObservable<DecesionResultData> onDecesionResultObservable {
+        get { return decesionResuleSubject.AsObservable(); }
+    }
+    private Subject<DecesionResultData> decesionResuleSubject = new Subject<DecesionResultData>();
 
 
     private void Start() {
@@ -44,13 +50,10 @@ public class NoteManager : MonoBehaviour {
                              if (i == 2 && !data.isLoudVoice) continue;
                              if (i == 1 && !(data.isJump && data.isLoudVoice)) continue;
 
-                             var note = notes.FirstOrDefault(n => n.Data.Type == i && n.Data.Team == data.teamNum);
-                             if (note == null) {
-                                 continue;
-                             }
-
+                             var note = notes.FirstOrDefault(n => n.Data.Type == i && n.Data.Team == data.team);
+                             if (!note) continue;
                              if (Mathf.Abs(note.Data.Time - sound.Time) < MissTime) {
-                                 //Evaluate(note, true);
+                                 Evaluate(note, Const.DecisionResult.Perfect);
                              }
                          }
                      });
@@ -84,27 +87,27 @@ public class NoteManager : MonoBehaviour {
             foreach (var c in s) {
                 var type = c - '0';
                 if (type >= 0 && type < FireWorkMaxType) {
-                    team1NoteDatas.Enqueue(new NoteData(1, type, time));
-                    team2NoteDatas.Enqueue(new NoteData(2, type, time));
+                    team1NoteDatas.Enqueue(new NoteData(Const.Team.team1, type, time));
+                    team2NoteDatas.Enqueue(new NoteData(Const.Team.team2, type, time));
                 }
             }
             time += BeatTime;
         }
     }
 
-    public void Evaluate(Note note, bool isPerfect) {
-        if (isPerfect) {
-            //sound.PlaySE();
-            note.Fired(fireWorkObj[note.Data.Type]);
-            //PerfectCount++;
-            //combo.AddScore();
-            //webCam.SaveImage();
-        } else {
-            note.Falled();
-            //combo.Reset();
-            //MissCount++;
+    public void Evaluate(Note note, Const.DecisionResult result) {
+        switch (result) {
+            case Const.DecisionResult.Perfect:
+                note.Fired(fireWorkObj[note.Data.Type]);
+                sound.PlaySE();
+                //webCam.SaveImage();
+                break;
+            case Const.DecisionResult.Miss:
+                note.Falled();
+                break;
         }
 
+        decesionResuleSubject.OnNext(new DecesionResultData(note.Data.Team, result));
         notes.Remove(note);
         Destroy(note.gameObject);
     }
@@ -112,14 +115,22 @@ public class NoteManager : MonoBehaviour {
 
 
 public class NoteData {
-    public int Team { get; private set; }
+    public Const.Team Team { get; private set; }
     public int Type { get; private set; }
     public float Time { get; private set; }
 
-    public NoteData(int team, int type, float time) {
+    public NoteData(Const.Team team, int type, float time) {
         Team = team;
         Type = type;
         Time = time;
     }
 }
 
+public class DecesionResultData {
+    public Const.Team team;
+    public Const.DecisionResult result;
+    public DecesionResultData(Const.Team team, Const.DecisionResult result) {
+        this.team = team;
+        this.result = result;
+    }
+}

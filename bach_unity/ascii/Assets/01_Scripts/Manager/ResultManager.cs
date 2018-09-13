@@ -1,32 +1,42 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.UI;
 
-public class ResultManager : MonoBehaviour {
-    [SerializeField] private int team1MaxCombo;
-    [SerializeField] private int team1PerfectCount;
-    [SerializeField] private int team1MissCount;
-    [SerializeField] private int team2MaxCombo;
-    [SerializeField] private int team2PerfectCount;
-    [SerializeField] private int team2MissCount;
-    [SerializeField] private int team1Score;
-    [SerializeField] private int team2Score;
+public class ResultManager : SingletonMonoBehaviour<ResultManager> {
 
-    [SerializeField] private Text user1Text;
-    [SerializeField] private Text user2Text;
+    [SerializeField] private List<UserScoreObj> userScoreObj;
+    private Dictionary<int, ScoreData> scoreDataDic = new Dictionary<int, ScoreData>();
 
-    public void SetData(int team1maxCombo, int team1perfectCount, int team1missCount, int team1Score,
-                        int team2maxCombo, int team2perfectCount, int team2missCount, int team2Score) {
-        this.team1MaxCombo = team1maxCombo;
-        this.team1PerfectCount = team1perfectCount;
-        this.team1MissCount = team1missCount;
-        this.team2MaxCombo = team2maxCombo;
-        this.team2PerfectCount = team2perfectCount;
-        this.team2MissCount = team2missCount;
-        this.team1Score = 145000;
-        this.team2Score = 242000;
-
-        user1Text.text = this.team1Score.ToString();
-        user2Text.text = this.team2Score.ToString();
+    public void SetData(ScoreData team1ScoreData, ScoreData team2ScoreData) {
+        scoreDataDic.Add(1, team1ScoreData);
+        scoreDataDic.Add(2, team2ScoreData);
     }
+
+    public void Show() {
+        foreach (var item in userScoreObj) {
+            item.userScores.comboText.text =
+                    "MaxCombo: " + scoreDataDic[item.team.ToInt()].maxCombo;
+            item.userScores.perfectText.text =
+                    "Perfect: " + scoreDataDic[item.team.ToInt()].perfectCount;
+            item.userScores.missText.text =
+                    "Miss: " + scoreDataDic[item.team.ToInt()].missCount;
+            item.userScores.scoreText.text =
+                    "Score: " + scoreDataDic[item.team.ToInt()].score;
+        }
+    }
+}
+
+[System.Serializable]
+public class UserScores {
+    public Text comboText;
+    public Text perfectText;
+    public Text missText;
+    public Text scoreText;
+}
+
+[System.Serializable]
+public class UserScoreObj {
+    public Const.Team team;
+    public UserScores userScores;
 }

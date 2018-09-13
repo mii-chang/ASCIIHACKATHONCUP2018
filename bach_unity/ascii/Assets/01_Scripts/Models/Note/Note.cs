@@ -6,12 +6,12 @@ using UniRx.Triggers;
 
 public class Note : MonoBehaviour {
 
-    [SerializeField] private NoteManager manager;
-    [SerializeField] private SoundManager sound;
     [SerializeField] private Transform[] muzzlePositions;
     [SerializeField] private GameObject lineObj;
     [SerializeField] private GameObject puffObj;
 
+    private NoteManager noteManager;
+    private SoundManager soundManager;
     private GameObject line;
     private GameObject puff;
 
@@ -22,14 +22,29 @@ public class Note : MonoBehaviour {
         gameObject.SetActive(true);
     }
 
+    private void Awake() {
+        noteManager = NoteManager.Instance;
+        soundManager = SoundManager.Instance;
+    }
+
     private void Start() {
         Init();
+        CalcNote();
+    }
+
+    private void Init() {
+        transform.position = muzzlePositions[Data.Type].position;
+        GetComponent<ParticleSystem>().Play();
+        line = Instantiate(lineObj);
+        line.transform.SetParent(transform);
+    }
+
+    private void CalcNote() {
         this.UpdateAsObservable()
             .Subscribe(_ =>
             {
-                var t = (Data.Time - sound.Time);
+                var t = (Data.Time - soundManager.Time);
                 var rate = t / NoteManager.DisplayTime;
-
 
                 line.transform.localPosition = new Vector3(
                     0,
@@ -38,20 +53,9 @@ public class Note : MonoBehaviour {
                 );
 
                 if (t < -NoteManager.MissTime) {
-                    Destroy(line);
-                    if (Random.value > 0.6f)
-                        manager.Evaluate(this, false);
-                    else
-                        manager.Evaluate(this, true);
+                    noteManager.Evaluate(this, Const.DecisionResult.Miss);
                 }
             });
-    }
-
-    private void Init() {
-        transform.position = muzzlePositions[Data.Type].position;
-        GetComponent<ParticleSystem>().Play();
-        line = Instantiate(lineObj);
-        line.transform.SetParent(transform);
     }
 
     public void Fired(GameObject fireWorkObj) {
